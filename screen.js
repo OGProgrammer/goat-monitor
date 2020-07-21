@@ -27,14 +27,14 @@ try {
 
 sizeCount = {};
 nightmare = Nightmare({
-    show: true,
-    dock: true,
+    show: false,
+    dock: false,
     width: 1280,
     height: 768
 });
 nightmare
     .goto(targetUri)
-    .inject('js', './node_modules/jquery/dist/jquery.js')
+    .inject('js',  __dirname + '/node_modules/jquery/dist/jquery.js')
     .wait('span[data-qa="show-filters"]')
     .click('span[data-qa="show-filters"]')
     .wait('span[data-qa="us-sizes"]')
