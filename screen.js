@@ -1,6 +1,6 @@
 const Nightmare = require('nightmare');
 const nodemailer = require("nodemailer");
-fs = require('fs');
+const fs = require('fs');
 
 const config = require(__dirname + '/config.json');
 
@@ -26,7 +26,6 @@ try {
     console.error(err)
 }
 
-sizeCount = {};
 nightmare = Nightmare({
     show: false,
     dock: false,
@@ -40,7 +39,10 @@ nightmare
     .click('span[data-qa="show-filters"]')
     .wait('span[data-qa="us-sizes"]')
     .evaluate((targetSize) => {
-            $(`div[data-qa='size-cell']:contains('${targetSize}')`).click().delay(5000);
+            $(`div[data-qa='size-cell']`)
+                .filter(function() {
+                    return $(this).text() === targetSize;
+                }).click().delay(5000);
         }
         , targetSize)
     .wait(5000)
@@ -58,7 +60,7 @@ nightmare
         if (!firstRun) {
             if (targetSize in shoeData[targetUri]) {
                 if (text !== shoeData[targetUri][targetSize]) {
-                    sendEmail(targetSize, targetUri);
+                    sendEmail(targetSize, targetUri, shoeData[targetUri][targetSize], text);
                 }
             }
         }
@@ -71,7 +73,7 @@ nightmare
 
 
 // async..await is not allowed in global scope, must use a wrapper
-async function sendEmail(newListingOnSize, url) {
+async function sendEmail(newListingOnSize, url, oldCount, newCount) {
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -92,7 +94,7 @@ async function sendEmail(newListingOnSize, url) {
         from: config.smtp.from, // sender address
         to: config.smtp.to, // list of receivers
         subject: "New Listing Found on GOAT", // Subject line
-        text: `New Listing Found for Size ${newListingOnSize}, visit ${url} to check it out.`, // plain text body
-        html: `New Listing Found for Size <b>${newListingOnSize}</b>, <a href="${url}">click here</a> to check it out. ${url}`, // html body
+        text: `Listing Count Changed from ${oldCount} to ${newCount} for size ${newListingOnSize}, visit ${url} to check it out.`, // plain text body
+        html: `Listing Count Changed from ${oldCount} to ${newCount} for size <b>${newListingOnSize}</b>, <a href="${url}">click here</a> to check it out. ${url}`, // html body
     });
 }
