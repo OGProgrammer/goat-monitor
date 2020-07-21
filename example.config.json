@@ -1,0 +1,11 @@
+{
+  "smtp": {
+    "host": "yoursmtp.host.com",
+    "port": 587,
+    "secure": false,
+    "to": "josh@remotedevforce.com",
+    "from": "\"Goat Monitor\" <youremail@remotedevforce.com>",
+    "username": "youremail@remotedevforce.com",
+    "password": "yo-password"
+  }
+}
