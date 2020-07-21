@@ -2,16 +2,17 @@ const Nightmare = require('nightmare');
 const nodemailer = require("nodemailer");
 fs = require('fs');
 
-const config = require('./config.json');
+const config = require(__dirname + '/config.json');
 
 var myArgs = process.argv.slice(2);
 targetUri = myArgs[0];
 targetSize = myArgs[1];
 
-dataPath = './savedData.json';
+dataPath = __dirname + '/savedData.json';
 // Check for last run file
 firstRun = null;
 shoeData = null;
+
 try {
     if (fs.existsSync(dataPath)) {
         //file exists
