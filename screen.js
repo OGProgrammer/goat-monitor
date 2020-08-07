@@ -34,13 +34,13 @@ nightmare = Nightmare({
 });
 nightmare
     .goto(targetUri)
-    .inject('js',  __dirname + '/node_modules/jquery/dist/jquery.js')
+    .inject('js', __dirname + '/node_modules/jquery/dist/jquery.js')
     .wait('span[data-qa="show-filters"]')
     .click('span[data-qa="show-filters"]')
     .wait('span[data-qa="us-sizes"]')
     .evaluate((targetSize) => {
             $(`div[data-qa='size-cell']`)
-                .filter(function() {
+                .filter(function () {
                     return $(this).text() === targetSize;
                 }).click().delay(5000);
         }
@@ -57,15 +57,19 @@ nightmare
         } else {
             shoeData[targetUri] = {};
         }
-        if (!firstRun) {
-            if (targetSize in shoeData[targetUri]) {
-                if (text !== shoeData[targetUri][targetSize]) {
-                    sendEmail(targetSize, targetUri, shoeData[targetUri][targetSize], text);
+        if (text == "25" || text == "0") {
+            // Something is up cause we should have less than 25 or 0 probably means we got blocked
+        } else {
+            if (!firstRun) {
+                if (targetSize in shoeData[targetUri]) {
+                    if (text !== shoeData[targetUri][targetSize]) {
+                        sendEmail(targetSize, targetUri, shoeData[targetUri][targetSize], text);
+                    }
                 }
             }
+            shoeData[targetUri][targetSize] = text;
+            fs.writeFileSync(dataPath, JSON.stringify(shoeData));
         }
-        shoeData[targetUri][targetSize] = text;
-        fs.writeFileSync(dataPath, JSON.stringify(shoeData));
     })
     .catch(error => {
         console.error('Search failed:', error)
