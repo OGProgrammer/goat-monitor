@@ -7,7 +7,7 @@
     "fs": "^0.0.1-security",
     "jquery": "^3.5.1",
     "nightmare": "^3.0.2",
-    "nodemailer": "^6.4.10"
+    "nodemailer": "^6.4.16"
   },
   "devDependencies": {},
   "scripts": {
